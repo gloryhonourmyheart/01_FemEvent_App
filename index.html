@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下午茶时光 - 女性社交平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        body {
+            background-color: #FFF0F5;
+            scroll-behavior: smooth;
+        }
+        .nav-blur {
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        /* 首屏容器：限制花瓣只在内部飘落 */
+        .hero-wrap {
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg {
+            background: linear-gradient(rgba(255,240,245,0.35), rgba(255,240,245,0.35)), 
+            url('https://i.postimg.cc/Z5JqqZ9x/mmexport1778250197075.jpg') center center / cover no-repeat;
+        }
+        /* 花瓣样式 */
+        .petal {
+            position: absolute;
+            top: -10%;
+            background-color: #ffc8d8;
+            border-radius: 50% 0 50% 50%;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* 活动卡片悬浮 */
+        .activity-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .activity-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(255, 182, 193, 0.4);
+        }
+        .value-card, .center-card {
+            transition: all 0.3s ease;
+        }
+        .value-card:hover, .center-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.35);
+        }
+        .modal-mask {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+        .func-item:hover .func-icon {
+            background-color: #FF9BB3;
+            color: #fff;
+        }
+        .feature-block {
+            padding: 4rem 0;
+            border-bottom: 1px solid #ffdde8;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pinkLight: '#FFF0F5',
+                        pinkDeep: '#FF9BB3',
+                        pinkFooter: '#FFE4EC',
+                        pinkDarkBg: '#FFE8F0',
+                        footerBg: '#FF9BB3'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-pinkLight">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 w-full nav-blur shadow-sm z-50 py-4 px-6 md:px-12">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="#" class="text-[22px] md:text-[26px] font-bold text-pinkDeep tracking-wide">下午茶时光</a>
+            <div class="hidden md:flex gap-8 text-[16px] font-medium">
+                <a href="#home" class="text-gray-700 hover:text-pinkDeep transition-colors">首页</a>
+                <a href="#activity" class="text-gray-700 hover:text-pinkDeep transition-colors">活动</a>
+                <a href="#value" class="text-gray-700 hover:text-pinkDeep transition-colors">价值</a>
+                <a href="#feature" class="text-gray-700 hover:text-pinkDeep transition-colors">功能详解</a>
+                <a href="#community" class="text-gray-700 hover:text-pinkDeep transition-colors">社区分享</a>
+                <a href="#service" class="text-gray-700 hover:text-pinkDeep transition-colors">社交功能</a>
+                <a href="#profile" class="text-gray-700 hover:text-pinkDeep transition-colors">个人中心</a>
+            </div>
+            <div class="md:hidden text-pinkDeep text-xl">☰</div>
+        </div>
+    </nav>
+    <!-- 首屏海报 + 花瓣特效容器 -->
+<section id="home" class="hero-wrap">
+    <div class="hero-bg min-h-screen flex flex-col justify-center items-center text-center px-6 pt-20 relative">
+        <!-- 文字层级在花瓣之上 -->
+        <h1 class="text-[24px] md:text-[40px] lg:text-[48px] font-bold text-gray-800 leading-relaxed max-w-3xl relative z-10 text-center">
+            美丽下午茶时光<br>
+            遇见更好的自己与有趣的灵魂
+        </h1>
+        <!-- 按钮层级在最顶层，确保可点击 -->
+        <button class="mt-10 bg-pinkDeep hover:bg-pink-400 text-white px-10 py-4 rounded-2xl text-[18px] font-medium shadow-lg transition-all duration-300 hover:scale-105 relative z-20">
+            立即加入
+        </button>
+    </div>
+</section>
+    <!-- 活动广场 -->
+    <section id="activity" class="py-20 px-6 md:px-12 bg-white/60">
+        <div class="container mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-[28px] md:text-[36px] font-bold text-gray-800 mb-3">精选活动 · Discovery Feed</h2>
+                <p class="text-gray-500 text-[16px]">温柔相聚，邂逅同频有趣的闺蜜时光</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8" id="cardList">
+                <div class="activity-card bg-white rounded-2xl overflow-hidden shadow-md" data-img="https://picsum.photos/id/431/800/600" data-title="法式甜品制作体验">
+                    <img src="https://picsum.photos/id/431/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">法式甜品制作体验</h3>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-pinkDeep">#下午茶 #甜品</span>
+                            <span class="text-gray-500">128人已报名</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-card bg-white rounded-2xl overflow-hidden shadow-md" data-img="https://picsum.photos/id/118/800/600" data-title="周末花艺插花沙龙">
+                    <img src="https://picsum.photos/id/118/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">周末花艺插花沙龙</h3>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-pinkDeep">#花艺 #美学</span>
+                            <span class="text-gray-500">96人已报名</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-card bg-white rounded-2xl overflow-hidden shadow-md" data-img="https://picsum.photos/id/175/800/600" data-title="小众艺术画展赏析">
+                    <img src="https://picsum.photos/id/175/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">小众艺术画展赏析</h3>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-pinkDeep">#画展 #文艺</span>
+                            <span class="text-gray-500">75人已报名</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-card bg-white rounded-2xl overflow-hidden shadow-md" data-img="https://picsum.photos/id/225/800/600" data-title="闺蜜轻奢下午茶聚会">
+                    <img src="https://picsum.photos/id/225/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">闺蜜轻奢下午茶聚会</h3>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-pinkDeep">#社交 #下午茶</span>
+                            <span class="text-gray-500">152人已报名</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-card bg-white rounded-2xl overflow-hidden shadow-md" data-img="https://picsum.photos/id/429/800/600" data-title="香薰蜡烛手作课堂">
+                    <img src="https://picsum.photos/id/429/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">香薰蜡烛手作课堂</h3>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-pinkDeep">#手作 #治愈</span>
+                            <span class="text-gray-500">83人已报名</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="activity-card bg-white rounded-2xl overflow-hidden shadow-md" data-img="https://picsum.photos/id/307/800/600" data-title="女性成长读书分享会">
+                    <img src="https://picsum.photos/id/307/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">女性成长读书分享会</h3>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-pinkDeep">#读书 #成长</span>
+                            <span class="text-gray-500">62人已报名</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 产品核心价值 -->
+    <section id="value" class="py-20 px-6 md:px-12">
+        <div class="container mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-[28px] md:text-[36px] font-bold text-gray-800 mb-3">产品核心价值</h2>
+                <p class="text-gray-500">用心打造属于女性的高品质社交生活</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="value-card bg-white rounded-2xl shadow-md p-8 text-center">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-2xl">
+                        <i class="fa fa-search"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">发现美</h3>
+                    <p class="text-gray-600 leading-relaxed">为用户精选城市中优质的下午茶、艺术展览与手作活动，让发现美好生活变得简单。</p>
+                </div>
+                <div class="value-card bg-white rounded-2xl shadow-md p-8 text-center">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-2xl">
+                        <i class="fa fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">连接人</h3>
+                    <p class="text-gray-600 leading-relaxed">通过智能算法和深度社交，帮助女性用户找到同频共振的朋友与伙伴。</p>
+                </div>
+                <div class="value-card bg-white rounded-2xl shadow-md p-8 text-center">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-2xl">
+                        <i class="fa fa-heart"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">愉悦心</h3>
+                    <p class="text-gray-600 leading-relaxed">提供舒适高品质的活动体验，舒缓压力，全方位满足女性的精神需求。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 核心功能详解 -->
+    <section id="feature" class="px-6 md:px-12 bg-white/50">
+        <div class="container mx-auto">
+            <div class="text-center py-16">
+                <h2 class="text-[28px] md:text-[36px] font-bold text-gray-800 mb-3">核心功能详解</h2>
+                <p class="text-gray-500">精致功能设计，贴心适配女性社交场景</p>
+            </div>
+            <div class="feature-block md:flex items-center gap-12">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <img src="https://picsum.photos/id/106/800/600" class="w-full rounded-2xl shadow-md">
+                </div>
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">活动详情</h3>
+                    <p class="text-pinkDeep font-medium mb-6">信息结构化展示，降低阅读门槛</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3"><i class="fa fa-check-circle text-pinkDeep mt-1"></i><span class="text-gray-600">信息结构化，时间地点一目了然</span></li>
+                        <li class="flex items-start gap-3"><i class="fa fa-check-circle text-pinkDeep mt-1"></i><span class="text-gray-600">主办方背书，快速建立参与信任感</span></li>
+                        <li class="flex items-start gap-3"><i class="fa fa-check-circle text-pinkDeep mt-1"></i><span class="text-gray-600">社交氛围感知，提前查看同好报名名单</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="feature-block md:flex items-center gap-12 flex-row-reverse">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <img src="https://picsum.photos/id/425/800/600" class="w-full rounded-2xl shadow-md">
+                </div>
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">聊天社交</h3>
+                    <p class="text-pinkDeep font-medium mb-6">打破壁垒，轻松交流</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3"><i class="fa fa-check-circle text-pinkDeep mt-1"></i><span class="text-gray-600">活动群聊，报名后自动加入专属社群</span></li>
+                        <li class="flex items-start gap-3"><i class="fa fa-check-circle text-pinkDeep mt-1"></i><span class="text-gray-600">私密私聊，一对一沟通严格保护隐私</span></li>
+                        <li class="flex items-start gap-3"><i class="fa fa-check-circle text-pinkDeep mt-1"></i><span class="text-gray-600">全方位安全机制，支持举报与屏蔽功能</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 社区分享功能 -->
+    <section id="community" class="py-20 px-6 md:px-12 bg-white/70">
+        <div class="container mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-[28px] md:text-[36px] font-bold text-gray-800 mb-3">社区分享 · Community Share</h2>
+                <p class="text-gray-500">记录美好瞬间，分享生活灵感，与更多有趣的灵魂相遇</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                <div class="func-item">
+                    <div class="func-icon w-20 h-20 mx-auto rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-3xl transition-all duration-300">
+                        <i class="fa fa-camera-retro"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-5 mb-2 text-gray-800">美好瞬间</h3>
+                    <p class="text-gray-500">用图文记录每一次下午茶、花艺与手作的精彩时刻，生成专属时光相册</p>
+                </div>
+                <div class="func-item">
+                    <div class="func-icon w-20 h-20 mx-auto rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-3xl transition-all duration-300">
+                        <i class="fa fa-lightbulb-o"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-5 mb-2 text-gray-800">生活灵感</h3>
+                    <p class="text-gray-500">分享穿搭、妆容、家居等生活美学灵感，收获同频姐妹的点赞与互动</p>
+                </div>
+                <div class="func-item">
+                    <div class="func-icon w-20 h-20 mx-auto rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-3xl transition-all duration-300">
+                        <i class="fa fa-share-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-5 mb-2 text-gray-800">一键分享</h3>
+                    <p class="text-gray-500">支持将精彩内容一键分享至微信、朋友圈、小红书等社交平台，扩大影响力</p>
+                </div>
+            </div>
+            <!-- 社区分享示例流 -->
+            <div class="mt-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <img src="https://picsum.photos/id/1060/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-pink-200 flex items-center justify-center text-pinkDeep text-xs font-bold">L</div>
+                            <span class="text-sm text-gray-700 font-medium">Lisa的下午茶</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">今天的法式甜品课太治愈了！马卡龙配色美到犯规 🍰✨</p>
+                        <div class="flex items-center gap-4 text-gray-400 text-sm">
+                            <span><i class="fa fa-heart-o text-pinkDeep"></i> 128</span>
+                            <span><i class="fa fa-comment-o"></i> 32</span>
+                            <span><i class="fa fa-share"></i> 分享</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <img src="https://picsum.photos/id/152/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-pink-200 flex items-center justify-center text-pinkDeep text-xs font-bold">M</div>
+                            <span class="text-sm text-gray-700 font-medium">Mia的花艺日记</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">第一次尝试韩式插花，粉玫瑰和尤加利叶的搭配太温柔了 🌸</p>
+                        <div class="flex items-center gap-4 text-gray-400 text-sm">
+                            <span><i class="fa fa-heart-o text-pinkDeep"></i> 256</span>
+                            <span><i class="fa fa-comment-o"></i> 45</span>
+                            <span><i class="fa fa-share"></i> 分享</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
+                    <img src="https://picsum.photos/id/250/600/400" class="w-full h-48 object-cover">
+                    <div class="p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded-full bg-pink-200 flex items-center justify-center text-pinkDeep text-xs font-bold">A</div>
+                            <span class="text-sm text-gray-700 font-medium">Amy手作时光</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">香薰蜡烛DIY成功！薰衣草味道让人瞬间放松，推荐姐妹们试试 🕯️</p>
+                        <div class="flex items-center gap-4 text-gray-400 text-sm">
+                            <span><i class="fa fa-heart-o text-pinkDeep"></i> 189</span>
+                            <span><i class="fa fa-comment-o"></i> 28</span>
+                            <span><i class="fa fa-share"></i> 分享</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 核心社交功能 -->
+    <section id="service" class="py-20 px-6 md:px-12">
+        <div class="container mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-[28px] md:text-[36px] font-bold text-gray-800 mb-3">核心社交功能</h2>
+                <p class="text-gray-500">安全舒适，只为女性贴心打造</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                <div class="func-item">
+                    <div class="func-icon w-20 h-20 mx-auto rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-3xl transition-all duration-300">
+                        <i class="fa fa-comments"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-5 mb-2 text-gray-800">活动群聊</h3>
+                    <p class="text-gray-500">同好相聚，随时交流活动动态</p>
+                </div>
+                <div class="func-item">
+                    <div class="func-icon w-20 h-20 mx-auto rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-3xl transition-all duration-300">
+                        <i class="fa fa-lock"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-5 mb-2 text-gray-800">私密私聊</h3>
+                    <p class="text-gray-500">一对一私密沟通，保护隐私</p>
+                </div>
+                <div class="func-item">
+                    <div class="func-icon w-20 h-20 mx-auto rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-3xl transition-all duration-300">
+                        <i class="fa fa-shield"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mt-5 mb-2 text-gray-800">安全机制</h3>
+                    <p class="text-gray-500">严格审核，营造纯净社交环境</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 专属个人主页 四宫格 -->
+    <section id="profile" class="py-20 px-6 md:px-12 bg-pinkDarkBg">
+        <div class="container mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-[28px] md:text-[36px] font-bold text-gray-800 mb-3">专属个人主页</h2>
+                <p class="text-gray-500">属于你的专属空间，记录每一段美好时光</p>
+            </div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="center-card bg-white rounded-2xl shadow-md p-6 text-center">
+                    <div class="w-14 h-14 mx-auto mb-5 rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-xl">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">个人档案</h3>
+                    <p class="text-gray-500 text-sm">自定义头像与个性简介</p>
+                </div>
+                <div class="center-card bg-white rounded-2xl shadow-md p-6 text-center">
+                    <div class="w-14 h-14 mx-auto mb-5 rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-xl">
+                        <i class="fa fa-history"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">参加历史</h3>
+                    <p class="text-gray-500 text-sm">按时间轴展示过往活动</p>
+                </div>
+                <div class="center-card bg-white rounded-2xl shadow-md p-6 text-center">
+                    <div class="w-14 h-14 mx-auto mb-5 rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-xl">
+                        <i class="fa fa-star"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">收藏与关注</h3>
+                    <p class="text-gray-500 text-sm">一键收藏感兴趣的活动</p>
+                </div>
+                <div class="center-card bg-white rounded-2xl shadow-md p-6 text-center">
+                    <div class="w-14 h-14 mx-auto mb-5 rounded-full bg-pink-100 text-pinkDeep flex items-center justify-center text-xl">
+                        <i class="fa fa-diamond"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">会员中心</h3>
+                    <p class="text-gray-500 text-sm">Pro会员专属特权权益</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 页脚 -->
+    <footer class="bg-footerBg py-6 text-center text-white">
+        <p class="text-base">© 2026 美丽下午茶时光 | 隐私政策 | 联系我们</p>
+    </footer>
+    <!-- 活动弹窗 -->
+    <div id="activityModal" class="fixed inset-0 modal-mask z-[999] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-4xl overflow-hidden relative">
+            <button id="closeModal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 text-gray-600 text-xl flex items-center justify-center hover:bg-pinkDeep hover:text-white transition-colors z-10">×</button>
+            <div class="md:flex">
+                <div class="md:w-1/2">
+                    <img id="modalImg" src="" class="w-full h-64 md:h-full object-cover">
+                </div>
+                <div class="md:w-1/2 p-6 md:p-8">
+                    <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-4"></h3>
+                    <div class="space-y-3 text-gray-600 mb-6">
+                        <p><span class="font-medium">活动时间：</span>周五 14:00</p>
+                        <p><span class="font-medium">活动地点：</span>市中心某咖啡馆</p>
+                        <p><span class="font-medium">活动价格：</span><span class="text-pinkDeep font-bold">¥199</span></p>
+                    </div>
+                    <div class="mb-6">
+                        <p class="font-medium text-gray-800 mb-2">活动流程</p>
+                        <ul class="text-gray-600 space-y-2 pl-4">
+                            <li>14:00 签到入场</li>
+                            <li>14:30 手作/体验环节</li>
+                            <li>16:00 自由交流合影</li>
+                        </ul>
+                    </div>
+                    <button class="w-full bg-pinkDeep hover:bg-pink-400 text-white py-3 rounded-xl text-lg font-medium transition-all">一键报名</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 1. 定义飘落动画
+        const fallStyle = document.createElement('style');
+        fallStyle.textContent = `
+            @keyframes fall {
+                0% {
+                    transform: translateY(0) rotate(0deg) skewX(0deg);
+                }
+                100% {
+                    transform: translateY(100vh) rotate(360deg) skewX(15deg);
+                }
+            }
+        `;
+        document.head.appendChild(fallStyle);
+        // 2. 生成花瓣
+        const heroWrap = document.querySelector('.hero-wrap');
+        const petalCount = 15; // 控制花瓣数量，不密集
+        for (let i = 0; i < petalCount; i++) {
+            const petal = document.createElement('div');
+            petal.classList.add('petal');
+            // 随机大小
+            const size = Math.random() * 12 + 8;
+            petal.style.width = size + 'px';
+            petal.style.height = size + 'px';
+            // 随机水平位置
+            petal.style.left = Math.random() * 100 + '%';
+            // 随机透明度（半透明）
+            petal.style.opacity = Math.random() * 0.4 + 0.4;
+            // 随机飘落时长（速度不同）
+            const duration = Math.random() * 6 + 5;
+            petal.style.animation = `fall ${duration}s linear infinite`;
+            // 随机延迟，让花瓣错落出现
+            petal.style.animationDelay = Math.random() * 6 + 's';
+            heroWrap.appendChild(petal);
+        }
+        // 3. 活动弹窗逻辑
+        const modal = document.getElementById('activityModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalImg = document.getElementById('modalImg');
+        const modalTitle = document.getElementById('modalTitle');
+        const cardList = document.querySelectorAll('.activity-card');
+        cardList.forEach(card => {
+            card.addEventListener('click', function() {
+                modalImg.src = this.dataset.img;
+                modalTitle.innerText = this.dataset.title;
+                modal.classList.remove('hidden');
+                document.body.classList.add('modal-open');
+            });
+        });
+        function hideModal() {
+            modal.classList.add('hidden');
+            document.body.classList.remove('modal-open');
+        }
+        closeModal.addEventListener('click', hideModal);
+        modal.addEventListener('click', e => e.target === modal && hideModal());
+    </script>
+</body>
+</html>
