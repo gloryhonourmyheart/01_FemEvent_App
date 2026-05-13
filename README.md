@@ -92,6 +92,3 @@
 
 - **在线体验:** 直接在浏览器中打开 `https://github.com/gloryhonourmyheart/01_FemEvent_App` 即可预览网站。
 
-## 评审参考
-
-本项目已通过 HackAgent 平台提交。评审维度涵盖问题真实性、解决方案完整度、技术亮点及影响力潜力。
